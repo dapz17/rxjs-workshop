@@ -8,7 +8,11 @@ var close1Clicks = Rx.Observable.fromEvent(closeButton1, 'click');
 var close2Clicks = Rx.Observable.fromEvent(closeButton2, 'click');
 var close3Clicks = Rx.Observable.fromEvent(closeButton3, 'click');
 
-refreshClickStream.subscribe(() => console.log('Refresh'));
-close1Clicks.subscribe(() => console.log('click1'));
-close2Clicks.subscribe(() => console.log('click2'));
-close3Clicks.subscribe(() => console.log('click3'));
+var startupRequestStream = Rx.Observable.of('https://api.github.com/users');
+
+var responseStream = startupRequestStream
+  .flatMap(requestUrl =>
+    Rx.Observable.fromPromise(fetch(requestUrl).then(response => response.json()))
+  );
+
+responseStream.subscribe(res => console.log('First request from a stream', res));

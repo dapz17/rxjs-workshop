@@ -24,7 +24,9 @@ var responseStream = requestStream
     ); 
 
 function createSuggestionStream(responseStream){
-    return responseStream.map(listUsers => listUsers[Math.floor(Math.random()*listUsers.length)]);
+    return responseStream
+        .map(listUsers => listUsers[Math.floor(Math.random()*listUsers.length)])
+        .startWith(null);
 }
 
 var suggestionStream = createSuggestionStream(responseStream);
@@ -60,10 +62,15 @@ suggestionStream.subscribe({
 
 function renderSuggestion(suggestedUser, selector) {
     var suggestionEl = document.querySelector(selector);
-    var usernameEl = suggestionEl.querySelector('.username');
-    usernameEl.href = suggestedUser.html_url;
-    usernameEl.textContent = suggestedUser.login;
-    var imgEl = suggestionEl.querySelector('img');
-    imgEl.src = "";
-    imgEl.src = suggestedUser.avatar_url;
+      if (suggestedUser === null) {
+        suggestionEl.style.visibility = 'hidden';
+      } else {
+        suggestionEl.style.visibility = 'visible';
+        var usernameEl = suggestionEl.querySelector('.username');
+        usernameEl.href = suggestedUser.html_url;
+        usernameEl.textContent = suggestedUser.login;
+        var imgEl = suggestionEl.querySelector('img');
+        imgEl.src = "";
+        imgEl.src = suggestedUser.avatar_url;
+    }
 }

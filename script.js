@@ -15,18 +15,22 @@ var responseStream = startupRequestStream
     Rx.Observable.fromPromise(fetch(requestUrl).then(response => response.json()))
   );
 
+function createSuggestion(listUsers){
+  return listUsers[Math.floor(Math.random()*listUsers.length)];
+}
+
 responseStream.subscribe(listUsers => {
-    var suggestedUser = listUsers[Math.floor(Math.random()*listUsers.length)];
+    var suggestedUser = createSuggestion(listUsers);
     renderSuggestion(suggestedUser, '.suggestion1');
 });
 
 responseStream.subscribe(listUsers => {
-    var suggestedUser = listUsers[Math.floor(Math.random()*listUsers.length)];
+    var suggestedUser = createSuggestion(listUsers);
     renderSuggestion(suggestedUser, '.suggestion2');
 });
 
 responseStream.subscribe(listUsers => {
-    var suggestedUser = listUsers[Math.floor(Math.random()*listUsers.length)];
+    var suggestedUser = createSuggestion(listUsers);
     renderSuggestion(suggestedUser, '.suggestion3');
 });
 

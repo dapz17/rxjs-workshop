@@ -26,7 +26,8 @@ var responseStream = requestStream
 function createSuggestionStream(responseStream){
     return responseStream
         .map(listUsers => listUsers[Math.floor(Math.random()*listUsers.length)])
-        .startWith(null);
+        .startWith(null)
+        .merge(refreshClickStream.map(ev => null));
 }
 
 var suggestionStream = createSuggestionStream(responseStream);

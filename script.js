@@ -10,13 +10,21 @@ var close3Clicks = Rx.Observable.fromEvent(closeButton3, 'click');
 
 var startupRequestStream = Rx.Observable.of('https://api.github.com/users');
 
-var responseStream = startupRequestStream
-  .flatMap(requestUrl =>
-    Rx.Observable.fromPromise(fetch(requestUrl).then(response => response.json()))
-  );
+var requestOnRefreshStream = refreshClickStream
+    .map(ev => {
+        var randomOffset = Math.floor(Math.random()*500);
+        return 'https://api.github.com/users?since=' + randomOffset;
+    });
+
+var requestStream = startupRequestStream.merge(requestOnRefreshStream); 
+
+var responseStream = requestStream
+    .flatMap(requestUrl =>
+        Rx.Observable.fromPromise(fetch(requestUrl).then(response => response.json()))
+    ); 
 
 function createSuggestionStream(responseStream){
-  return responseStream.map(listUsers => listUsers[Math.floor(Math.random()*listUsers.length)]);
+    return responseStream.map(listUsers => listUsers[Math.floor(Math.random()*listUsers.length)]);
 }
 
 var suggestionStream = createSuggestionStream(responseStream);
@@ -51,11 +59,11 @@ suggestionStream.subscribe({
 // Rendering Funtion ---------------------
 
 function renderSuggestion(suggestedUser, selector) {
-  var suggestionEl = document.querySelector(selector);
-  var usernameEl = suggestionEl.querySelector('.username');
-  usernameEl.href = suggestedUser.html_url;
-  usernameEl.textContent = suggestedUser.login;
-  var imgEl = suggestionEl.querySelector('img');
-  imgEl.src = "";
-  imgEl.src = suggestedUser.avatar_url;
+    var suggestionEl = document.querySelector(selector);
+    var usernameEl = suggestionEl.querySelector('.username');
+    usernameEl.href = suggestedUser.html_url;
+    usernameEl.textContent = suggestedUser.login;
+    var imgEl = suggestionEl.querySelector('img');
+    imgEl.src = "";
+    imgEl.src = suggestedUser.avatar_url;
 }

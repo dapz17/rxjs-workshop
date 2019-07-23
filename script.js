@@ -21,18 +21,21 @@ var requestStream = startupRequestStream.merge(requestOnRefreshStream);
 var responseStream = requestStream
     .flatMap(requestUrl =>
         Rx.Observable.fromPromise(fetch(requestUrl).then(response => response.json()))
-    ); 
+    );
 
-function createSuggestionStream(responseStream){
+function createSuggestionStream(responseStream, closeClickStream){
     return responseStream
-        .map(listUsers => listUsers[Math.floor(Math.random()*listUsers.length)])
+        .map(listUsers => getRandomUser(listUsers))
         .startWith(null)
-        .merge(refreshClickStream.map(ev => null));
+        .merge(refreshClickStream.map(ev => null))
+        .merge(closeClickStream.withLatestFrom(responseStream, (ev, listUsers) => getRandomUser(listUsers)) );
 }
 
-var suggestionStream = createSuggestionStream(responseStream);
+var suggestionStream1 = createSuggestionStream(responseStream, close1Clicks);
+var suggestionStream2 = createSuggestionStream(responseStream, close2Clicks);
+var suggestionStream3 = createSuggestionStream(responseStream, close3Clicks);
 
-suggestionStream.subscribe({
+suggestionStream1.subscribe({
     next: user => {
         console.log('next1');
         renderSuggestion(user, '.suggestion1');
@@ -41,7 +44,7 @@ suggestionStream.subscribe({
     complete: () => console.log('complete1')
 });
 
-suggestionStream.subscribe({
+suggestionStream2.subscribe({
     next: user => {
         console.log('next2');
         renderSuggestion(user, '.suggestion2');
@@ -50,7 +53,7 @@ suggestionStream.subscribe({
     complete: () => console.log('complete2')
 });
 
-suggestionStream.subscribe({
+suggestionStream3.subscribe({
     next: user => {
         console.log('next3');
         renderSuggestion(user, '.suggestion3');
@@ -74,4 +77,8 @@ function renderSuggestion(suggestedUser, selector) {
         imgEl.src = "";
         imgEl.src = suggestedUser.avatar_url;
     }
+}
+
+function getRandomUser(listUsers) {
+    return listUsers[Math.floor(Math.random()*listUsers.length)];
 }

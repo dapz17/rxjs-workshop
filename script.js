@@ -21,7 +21,7 @@ var requestStream = startupRequestStream.merge(requestOnRefreshStream);
 var responseStream = requestStream
     .flatMap(requestUrl =>
         Rx.Observable.fromPromise(fetch(requestUrl).then(response => response.json()))
-    );
+    ).publishReplay().refCount(1);
 
 function createSuggestionStream(responseStream, closeClickStream){
     return responseStream

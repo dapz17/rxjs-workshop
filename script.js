@@ -21,16 +21,31 @@ function createSuggestionStream(responseStream){
 
 var suggestionStream = createSuggestionStream(responseStream);
 
-suggestionStream.subscribe(suggestedUser => {
-    renderSuggestion(suggestedUser, '.suggestion1');
+suggestionStream.subscribe({
+    next: user => {
+        console.log('next1');
+        renderSuggestion(user, '.suggestion1');
+    },
+    error: err => console.log('error1'),
+    complete: () => console.log('complete1')
 });
 
-suggestionStream.subscribe(suggestedUser => {
-    renderSuggestion(suggestedUser, '.suggestion2');
+suggestionStream.subscribe({
+    next: user => {
+        console.log('next2');
+        renderSuggestion(user, '.suggestion2');
+    },
+    error: err => console.log('error2'),
+    complete: () => console.log('complete2')
 });
 
-suggestionStream.subscribe(suggestedUser => {
-    renderSuggestion(suggestedUser, '.suggestion3');
+suggestionStream.subscribe({
+    next: user => {
+        console.log('next3');
+        renderSuggestion(user, '.suggestion3');
+    },
+    error: err => console.log('error3'),
+    complete: () => console.log('complete3')
 });
 
 // Rendering Funtion ---------------------

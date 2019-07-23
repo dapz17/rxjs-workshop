@@ -15,4 +15,44 @@ var responseStream = startupRequestStream
     Rx.Observable.fromPromise(fetch(requestUrl).then(response => response.json()))
   );
 
-responseStream.subscribe(res => console.log('First request from a stream', res));
+responseStream.subscribe(listUsers => {
+    var suggestedUser = listUsers[Math.floor(Math.random()*listUsers.length)];
+
+    var suggestionEl = document.querySelector('.suggestion1');
+
+    var usernameEl = suggestionEl.querySelector('.username');
+    usernameEl.href = suggestedUser.html_url;
+    usernameEl.textContent = suggestedUser.login;
+    
+    var imgEl = suggestionEl.querySelector('img');
+    imgEl.src = "";
+    imgEl.src = suggestedUser.avatar_url;
+});
+
+responseStream.subscribe(listUsers => {
+    var suggestedUser = listUsers[Math.floor(Math.random()*listUsers.length)];
+
+    var suggestionEl = document.querySelector('.suggestion2');
+
+    var usernameEl = suggestionEl.querySelector('.username');
+    usernameEl.href = suggestedUser.html_url;
+    usernameEl.textContent = suggestedUser.login;
+    
+    var imgEl = suggestionEl.querySelector('img');
+    imgEl.src = "";
+    imgEl.src = suggestedUser.avatar_url;
+});
+
+responseStream.subscribe(listUsers => {
+    var suggestedUser = listUsers[Math.floor(Math.random()*listUsers.length)];
+
+    var suggestionEl = document.querySelector('.suggestion3');
+
+    var usernameEl = suggestionEl.querySelector('.username');
+    usernameEl.href = suggestedUser.html_url;
+    usernameEl.textContent = suggestedUser.login;
+    
+    var imgEl = suggestionEl.querySelector('img');
+    imgEl.src = "";
+    imgEl.src = suggestedUser.avatar_url;
+});
